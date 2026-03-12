@@ -1,449 +1,648 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NeuralMind AI - Pakistan's AI Assistant</title>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<title>نور - Islamic Prayer Times & Duas</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Nunito:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
+:root{
+  --gold:#c9a84c;--gold2:#e8c97a;--green:#1a6b4a;--green2:#0f4a32;
+  --bg:#0a0f0d;--card:#111a15;--card2:#162019;--border:rgba(201,168,76,0.15);
+  --text:#e8e0d0;--muted:#8a8070;
+}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Outfit',sans-serif;background:#0a0a12;color:#e0e0e0;height:100vh;display:flex;flex-direction:column;overflow:hidden}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#7c3aed55;border-radius:2px}
-@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes ripple{0%{transform:scale(1);opacity:1}100%{transform:scale(1.6);opacity:0}}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* Background pattern */
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(26,107,74,0.15) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(201,168,76,0.08) 0%,transparent 50%);pointer-events:none;z-index:0}
+
+/* Geometric pattern overlay */
+body::after{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.03'%3E%3Cpath d='M30 0l8.66 15H21.34L30 0zm0 60l-8.66-15h17.32L30 60zM0 30l15-8.66V38.66L0 30zm60 0L45 38.66V21.34L60 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;z-index:0}
+
+.container{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:0 0 80px}
 
 /* Header */
-#header{background:rgba(10,10,18,0.98);border-bottom:1px solid rgba(124,58,237,0.2);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-#logo{display:flex;align-items:center;gap:10px}
-#logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;font-size:18px}
-#logo-text{font-weight:700;font-size:16px;color:#fff}
-#logo-sub{font-size:10px;color:#7c3aed;font-weight:600;letter-spacing:2px}
-#header-right{display:flex;align-items:center;gap:10px}
-#msgs-left{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);border-radius:20px;padding:4px 12px;font-size:12px;color:#a78bfa}
-#premium-btn{background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:20px;padding:6px 14px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit}
+header{text-align:center;padding:32px 20px 20px;position:relative}
+.arabic-title{font-family:'Amiri',serif;font-size:36px;color:var(--gold);letter-spacing:2px;line-height:1.2;text-shadow:0 0 30px rgba(201,168,76,0.3)}
+.app-subtitle{font-size:11px;color:var(--muted);letter-spacing:4px;text-transform:uppercase;margin-top:4px}
+.bismillah{font-family:'Amiri',serif;font-size:18px;color:rgba(201,168,76,0.6);margin-top:8px}
+
+/* Location bar */
+.location-bar{margin:0 16px 16px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.location-left{display:flex;align-items:center;gap:8px}
+.location-icon{font-size:16px}
+#city-name{font-size:13px;font-weight:600;color:var(--text)}
+#date-display{font-size:11px;color:var(--muted)}
+.location-right{display:flex;gap:8px}
+.loc-btn{background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:8px;padding:6px 12px;color:var(--gold);cursor:pointer;font-size:11px;font-family:inherit;font-weight:600;transition:all 0.2s}
+.loc-btn:hover{background:rgba(201,168,76,0.2)}
+
+/* Next prayer card */
+.next-prayer-card{margin:0 16px 16px;background:linear-gradient(135deg,var(--green2),#0a2018);border:1px solid rgba(201,168,76,0.3);border-radius:20px;padding:24px;text-align:center;position:relative;overflow:hidden}
+.next-prayer-card::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;background:radial-gradient(circle,rgba(201,168,76,0.15) 0%,transparent 70%)}
+.next-label{font-size:10px;color:rgba(201,168,76,0.7);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.next-name{font-family:'Amiri',serif;font-size:32px;color:var(--gold);margin-bottom:4px}
+.next-time{font-size:42px;font-weight:300;color:#fff;letter-spacing:2px;margin-bottom:8px}
+.countdown{font-size:13px;color:rgba(201,168,76,0.8);background:rgba(201,168,76,0.1);border-radius:20px;padding:4px 14px;display:inline-block}
+
+/* Prayer times grid */
+.prayers-grid{margin:0 16px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prayer-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all 0.2s;cursor:default;position:relative;overflow:hidden}
+.prayer-card.current{border-color:rgba(201,168,76,0.5);background:linear-gradient(135deg,rgba(201,168,76,0.08),var(--card))}
+.prayer-card.current::after{content:'▶';position:absolute;top:8px;right:10px;color:var(--gold);font-size:8px}
+.prayer-emoji{font-size:22px}
+.prayer-name-en{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:1px;text-transform:uppercase}
+.prayer-name-ar{font-family:'Amiri',serif;font-size:16px;color:var(--gold2)}
+.prayer-time-display{font-size:20px;font-weight:600;color:var(--text)}
+.prayer-iqama{font-size:10px;color:var(--muted)}
 
 /* Tabs */
-#tabs{background:rgba(10,10,18,0.8);border-bottom:1px solid rgba(255,255,255,0.06);display:flex;padding:0 16px;flex-shrink:0}
-.tab-btn{flex:1;padding:12px 8px;background:none;border:none;border-bottom:2px solid transparent;color:#555;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:4px;transition:all 0.2s}
-.tab-btn.active{border-bottom-color:#7c3aed;color:#a78bfa}
-.tab-btn span{font-size:18px}
+.tabs{margin:0 16px 16px;display:flex;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:4px;gap:4px}
+.tab-btn{flex:1;padding:10px 6px;background:none;border:none;border-radius:10px;color:var(--muted);cursor:pointer;font-size:12px;font-weight:600;font-family:inherit;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:3px}
+.tab-btn span{font-size:16px}
+.tab-btn.active{background:linear-gradient(135deg,var(--green2),#0a2018);color:var(--gold);border:1px solid rgba(201,168,76,0.2)}
 
-/* Content */
-#content{flex:1;overflow:hidden;display:flex;flex-direction:column}
-.feature{display:none;flex-direction:column;height:100%;animation:fadeIn 0.3s ease}
-.feature.active{display:flex}
+/* Sections */
+.section{display:none;padding:0 16px}
+.section.active{display:block}
 
-/* Chat */
-#chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.msg-row{display:flex;align-items:flex-end;gap:8px}
-.msg-row.user{justify-content:flex-end}
-.msg-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
-.msg-bubble{max-width:75%;padding:10px 14px;font-size:14px;line-height:1.6;white-space:pre-wrap}
-.msg-bubble.ai{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:18px 18px 18px 4px;color:#f0f0f0}
-.msg-bubble.user{background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:18px 18px 4px 18px;color:#fff}
-.typing-dots{display:flex;gap:4px;padding:4px 0}
-.dot{width:6px;height:6px;border-radius:50%;background:#7c3aed}
-.dot:nth-child(1){animation:bounce 1s 0s infinite}
-.dot:nth-child(2){animation:bounce 1s 0.2s infinite}
-.dot:nth-child(3){animation:bounce 1s 0.4s infinite}
-#chat-input-row{padding:12px 16px;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:8px;flex-shrink:0}
-#chat-input{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:10px 16px;color:#f0f0f0;font-size:14px;outline:none;font-family:inherit;transition:border-color 0.2s}
-#chat-input:focus{border-color:#7c3aed}
-#chat-send{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;cursor:pointer;color:#fff;font-size:18px;transition:all 0.2s;display:flex;align-items:center;justify-content:center}
-#chat-send:disabled{background:rgba(255,255,255,0.06);cursor:default}
+/* Duas */
+.dua-category{margin-bottom:12px}
+.cat-header{display:flex;align-items:center;gap:8px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:14px;cursor:pointer;transition:all 0.2s;user-select:none}
+.cat-header:hover{border-color:rgba(201,168,76,0.3)}
+.cat-icon{font-size:20px}
+.cat-title{font-size:14px;font-weight:600;color:var(--text);flex:1}
+.cat-count{font-size:11px;color:var(--muted);background:rgba(255,255,255,0.05);border-radius:10px;padding:2px 8px}
+.cat-arrow{color:var(--muted);transition:transform 0.3s;font-size:12px}
+.cat-header.open .cat-arrow{transform:rotate(90deg)}
+.duas-list{display:none;margin-top:6px;display:flex;flex-direction:column;gap:6px}
+.duas-list.show{display:flex}
+.dua-card{background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:16px;animation:fadeIn 0.2s ease}
+.dua-arabic{font-family:'Amiri',serif;font-size:20px;color:var(--gold2);line-height:1.8;text-align:right;direction:rtl;margin-bottom:10px}
+.dua-transliteration{font-size:12px;color:rgba(201,168,76,0.7);font-style:italic;margin-bottom:6px;line-height:1.5}
+.dua-translation{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.dua-reference{font-size:10px;color:rgba(201,168,76,0.5);border-top:1px solid var(--border);padding-top:8px;margin-top:4px}
+.dua-actions{display:flex;gap:8px;margin-top:8px}
+.dua-btn{background:rgba(201,168,76,0.08);border:1px solid rgba(201,168,76,0.15);border-radius:8px;padding:5px 12px;color:var(--gold);cursor:pointer;font-size:11px;font-family:inherit;transition:all 0.2s}
+.dua-btn:hover{background:rgba(201,168,76,0.15)}
 
-/* Translate */
-#translate-wrap{padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;flex:1}
-.lang-row{display:flex;align-items:center;gap:12px}
-.lang-box{flex:1}
-.label{color:#a78bfa;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:6px}
-select,textarea{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:9px 12px;color:#f0f0f0;font-size:14px;outline:none;font-family:inherit;transition:border-color 0.2s}
-select:focus,textarea:focus{border-color:#7c3aed}
-select option{background:#1a1a2e}
-.swap-btn{margin-top:18px;width:38px;height:38px;border-radius:50%;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);color:#a78bfa;cursor:pointer;font-size:18px;flex-shrink:0}
-.action-btn{padding:13px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity 0.2s}
-.action-btn:disabled{background:rgba(255,255,255,0.06);cursor:default}
-.result-box{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);border-radius:12px;padding:16px}
-.result-label{color:#a78bfa;font-size:11px;font-weight:600;letter-spacing:1px;margin-bottom:10px}
-.result-text{color:#f0f0f0;font-size:15px;line-height:1.8}
-.copy-btn{margin-top:10px;background:none;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 12px;color:#888;cursor:pointer;font-size:12px;font-family:inherit}
+/* Qibla */
+#qibla-section{text-align:center}
+.qibla-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px 20px;margin-bottom:12px}
+.compass-wrap{position:relative;width:200px;height:200px;margin:0 auto 20px}
+.compass-bg{width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,#162019 0%,#0a0f0d 100%);border:2px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;position:relative}
+.compass-rose{position:absolute;inset:10px;border-radius:50%;border:1px solid rgba(201,168,76,0.1)}
+.compass-dirs{position:absolute;inset:0;border-radius:50%}
+.compass-n{position:absolute;top:8px;left:50%;transform:translateX(-50%);color:var(--gold);font-size:12px;font-weight:700}
+.compass-s{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);color:var(--muted);font-size:12px}
+.compass-e{position:absolute;right:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px}
+.compass-w{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px}
+#qibla-needle{position:absolute;width:4px;height:80px;top:50%;left:50%;transform-origin:bottom center;transform:translateX(-50%) translateY(-100%) rotate(0deg);transition:transform 1s ease;background:linear-gradient(to top,var(--gold),transparent);border-radius:2px}
+#qibla-needle::after{content:'🕋';position:absolute;top:-24px;left:50%;transform:translateX(-50%);font-size:18px}
+.qibla-degree{font-size:28px;font-weight:700;color:var(--gold);margin-bottom:4px}
+.qibla-desc{font-size:13px;color:var(--muted)}
+#get-qibla-btn{background:linear-gradient(135deg,var(--green),var(--green2));border:none;border-radius:12px;padding:14px 24px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;width:100%}
 
-/* Image */
-#image-wrap{padding:20px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;flex:1}
-.style-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.chip{padding:6px 14px;border-radius:20px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#888;cursor:pointer;font-size:12px;font-family:inherit;transition:all 0.15s}
-.chip.active{border-color:#7c3aed;background:rgba(124,58,237,0.3);color:#a78bfa}
-.art-preview{width:100%;aspect-ratio:16/9;border-radius:12px;background:linear-gradient(135deg,#1a0a2e,#0f1a2e,#1a2e0f);display:flex;align-items:center;justify-content:center;margin-bottom:14px;border:1px solid rgba(124,58,237,0.2)}
+/* Tasbeeh */
+#tasbeeh-section{text-align:center}
+.tasbeeh-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:30px 20px;margin-bottom:12px}
+.tasbeeh-select{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:20px}
+.tasbeeh-opt{padding:8px 16px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;font-size:13px;font-family:inherit;transition:all 0.2s}
+.tasbeeh-opt.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.1)}
+.tasbeeh-arabic{font-family:'Amiri',serif;font-size:28px;color:var(--gold2);margin-bottom:8px;line-height:1.6}
+.tasbeeh-meaning{font-size:13px;color:var(--muted);margin-bottom:24px}
+.counter-display{font-size:72px;font-weight:300;color:#fff;line-height:1;margin-bottom:8px}
+.counter-target{font-size:13px;color:var(--muted);margin-bottom:24px}
+.counter-progress{width:100%;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;margin-bottom:24px;overflow:hidden}
+.counter-bar{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));border-radius:3px;transition:width 0.3s;width:0%}
+.tasbih-btn{width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,var(--green2),#0a2018);border:3px solid rgba(201,168,76,0.3);cursor:pointer;font-size:40px;transition:all 0.1s;box-shadow:0 0 30px rgba(26,107,74,0.3)}
+.tasbih-btn:active{transform:scale(0.95);box-shadow:0 0 50px rgba(26,107,74,0.5)}
+.tasbeeh-controls{display:flex;gap:10px;margin-top:16px;justify-content:center}
+.t-ctrl-btn{background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:10px;padding:8px 20px;color:var(--muted);cursor:pointer;font-size:13px;font-family:inherit}
 
-/* Voice */
-#voice-wrap{padding:20px;display:flex;flex-direction:column;align-items:center;gap:24px;overflow-y:auto;flex:1}
-.voice-title{text-align:center;padding-top:20px}
-.voice-title h3{color:#fff;font-size:18px;font-weight:600;margin-bottom:8px}
-.voice-title p{color:#888;font-size:13px}
-.mic-wrap{position:relative}
-.ripple-ring{position:absolute;border-radius:50%;border:2px solid rgba(124,58,237,0.5);animation:ripple 1.5s ease-out infinite}
-.mic-btn{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;cursor:pointer;font-size:36px;box-shadow:0 0 30px rgba(124,58,237,0.4);transition:all 0.3s}
-.mic-btn.recording{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 0 30px rgba(239,68,68,0.5)}
-.transcript-box{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px}
-.speak-btn{margin-top:12px;background:rgba(124,58,237,0.2);border:1px solid rgba(124,58,237,0.4);border-radius:8px;padding:8px 16px;color:#a78bfa;cursor:pointer;font-size:13px;font-family:inherit}
+/* Info cards */
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:10px}
+.info-title{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.info-text{font-size:13px;color:var(--muted);line-height:1.7}
 
-/* Paywall */
-#paywall{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(8px)}
-#paywall.show{display:flex}
-#paywall-box{background:linear-gradient(145deg,#1a0a2e,#0f0f1a);border:1px solid #7c3aed;border-radius:24px;padding:40px 36px;max-width:380px;width:90%;text-align:center;box-shadow:0 0 60px rgba(124,58,237,0.3)}
-#paywall h2{color:#fff;font-size:22px;margin:16px 0 8px}
-#paywall p{color:#a78bfa;font-size:14px;line-height:1.6;margin-bottom:24px}
-.plan-box{background:rgba(124,58,237,0.15);border:1px solid rgba(124,58,237,0.3);border-radius:16px;padding:20px;margin-bottom:24px}
-.plan-name{color:#7c3aed;font-size:12px;font-weight:600;letter-spacing:2px;margin-bottom:8px}
-.plan-price{color:#fff;font-size:32px;font-weight:800}
-.plan-price span{font-size:14px;color:#a78bfa;font-weight:400}
-.plan-desc{color:#a78bfa;font-size:12px;margin-top:8px}
-.upgrade-btn{width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:12px;font-family:inherit}
-.close-paywall{background:none;border:none;color:#666;cursor:pointer;font-size:13px;font-family:inherit}
+/* Bottom nav */
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(10,15,13,0.95);border-top:1px solid var(--border);backdrop-filter:blur(20px);padding:8px 16px;display:flex;justify-content:space-around;z-index:100}
+.nav-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;font-weight:600;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 12px;border-radius:10px;transition:all 0.2s}
+.nav-btn span{font-size:20px}
+.nav-btn.active{color:var(--gold)}
 
-/* Footer */
-#footer{background:rgba(10,10,18,0.95);border-top:1px solid rgba(255,255,255,0.04);padding:6px 16px;display:flex;justify-content:space-between;flex-shrink:0}
-#footer span{color:#333;font-size:11px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
 </style>
 </head>
 <body>
+<div class="container">
 
-<!-- Paywall -->
-<div id="paywall">
-  <div id="paywall-box">
-    <div style="font-size:48px">👑</div>
-    <h2>Free Limit Reached!</h2>
-    <p>Aap ne aaj ke 10 free messages use kar liye.<br>Premium upgrade karo unlimited access ke liye!</p>
-    <div class="plan-box">
-      <div class="plan-name">PREMIUM PLAN</div>
-      <div class="plan-price">Rs. 299<span>/month</span></div>
-      <div class="plan-desc">Unlimited messages • All features • Priority AI</div>
-    </div>
-    <button class="upgrade-btn">🚀 Upgrade to Premium</button>
-    <button class="close-paywall" onclick="document.getElementById('paywall').classList.remove('show')">Kal wapas aao (free limit reset hogi)</button>
-  </div>
-</div>
+  <!-- Header -->
+  <header>
+    <div class="arabic-title">نور</div>
+    <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+    <div class="app-subtitle">Noor • Islamic Companion App</div>
+  </header>
 
-<!-- Header -->
-<div id="header">
-  <div id="logo">
-    <div id="logo-icon">🧠</div>
-    <div>
-      <div id="logo-text">NeuralMind AI</div>
-      <div id="logo-sub">PAKISTAN'S AI ASSISTANT</div>
-    </div>
-  </div>
-  <div id="header-right">
-    <div id="msgs-left">10 msgs left</div>
-    <button id="premium-btn" onclick="document.getElementById('paywall').classList.add('show')">👑 Premium</button>
-  </div>
-</div>
+  <!-- PRAYER TIMES PAGE -->
+  <div id="page-prayers" class="page">
 
-<!-- Tabs -->
-<div id="tabs">
-  <button class="tab-btn active" onclick="switchTab('chat',this)"><span>💬</span>AI Chat</button>
-  <button class="tab-btn" onclick="switchTab('translate',this)"><span>🌐</span>Translate</button>
-  <button class="tab-btn" onclick="switchTab('image',this)"><span>🎨</span>Images</button>
-  <button class="tab-btn" onclick="switchTab('voice',this)"><span>🎤</span>Voice</button>
-</div>
-
-<!-- Content -->
-<div id="content">
-
-  <!-- CHAT -->
-  <div class="feature active" id="feature-chat">
-    <div id="chat-messages">
-      <div class="msg-row">
-        <div class="msg-avatar">🧠</div>
-        <div class="msg-bubble ai">Assalam-o-Alaikum! 👋 Main NeuralMind AI hoon. Aap se kaise madad kar sakta hoon?<br>(Urdu ya English mein likho)</div>
-      </div>
-    </div>
-    <div id="chat-input-row">
-      <input id="chat-input" placeholder="Kuch bhi poochho... (Urdu/English)" onkeydown="if(event.key==='Enter')sendChat()"/>
-      <button id="chat-send" onclick="sendChat()">➤</button>
-    </div>
-  </div>
-
-  <!-- TRANSLATE -->
-  <div class="feature" id="feature-translate">
-    <div id="translate-wrap">
-      <div class="lang-row">
-        <div class="lang-box">
-          <div class="label">FROM</div>
-          <select id="from-lang">
-            <option>English</option><option>Urdu</option><option>Roman Urdu</option>
-            <option>Hindi</option><option>Arabic</option><option>French</option><option>Spanish</option>
-          </select>
-        </div>
-        <button class="swap-btn" onclick="swapLangs()">⇄</button>
-        <div class="lang-box">
-          <div class="label">TO</div>
-          <select id="to-lang">
-            <option>Urdu</option><option>English</option><option>Roman Urdu</option>
-            <option>Hindi</option><option>Arabic</option><option>French</option><option>Spanish</option>
-          </select>
+    <!-- Location -->
+    <div class="location-bar">
+      <div class="location-left">
+        <span class="location-icon">📍</span>
+        <div>
+          <div id="city-name">Karachi, Pakistan</div>
+          <div id="date-display">Loading...</div>
         </div>
       </div>
-      <textarea id="translate-input" rows="4" placeholder="Text likho translate karne ke liye..."></textarea>
-      <button class="action-btn" onclick="doTranslate()">🌐 Translate</button>
-      <div class="result-box" id="translate-result" style="display:none">
-        <div class="result-label">TRANSLATION</div>
-        <div class="result-text" id="translate-output"></div>
-        <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('translate-output').innerText)">📋 Copy</button>
+      <div class="location-right">
+        <button class="loc-btn" onclick="getLocation()">📡 Auto</button>
       </div>
     </div>
+
+    <!-- Next Prayer -->
+    <div class="next-prayer-card">
+      <div class="next-label">Next Prayer</div>
+      <div class="next-name" id="next-prayer-name">Fajr</div>
+      <div class="next-time" id="next-prayer-time">05:12</div>
+      <div class="countdown" id="countdown">Calculating...</div>
+    </div>
+
+    <!-- Prayer Cards -->
+    <div class="prayers-grid">
+      <div class="prayer-card" id="card-fajr">
+        <span class="prayer-emoji">🌙</span>
+        <span class="prayer-name-ar">فجر</span>
+        <span class="prayer-name-en">Fajr</span>
+        <span class="prayer-time-display" id="time-fajr">--:--</span>
+      </div>
+      <div class="prayer-card" id="card-sunrise">
+        <span class="prayer-emoji">🌅</span>
+        <span class="prayer-name-ar">طلوع</span>
+        <span class="prayer-name-en">Sunrise</span>
+        <span class="prayer-time-display" id="time-sunrise">--:--</span>
+      </div>
+      <div class="prayer-card" id="card-dhuhr">
+        <span class="prayer-emoji">☀️</span>
+        <span class="prayer-name-ar">ظہر</span>
+        <span class="prayer-name-en">Dhuhr</span>
+        <span class="prayer-time-display" id="time-dhuhr">--:--</span>
+      </div>
+      <div class="prayer-card" id="card-asr">
+        <span class="prayer-emoji">🌤️</span>
+        <span class="prayer-name-ar">عصر</span>
+        <span class="prayer-name-en">Asr</span>
+        <span class="prayer-time-display" id="time-asr">--:--</span>
+      </div>
+      <div class="prayer-card" id="card-maghrib">
+        <span class="prayer-emoji">🌇</span>
+        <span class="prayer-name-ar">مغرب</span>
+        <span class="prayer-name-en">Maghrib</span>
+        <span class="prayer-time-display" id="time-maghrib">--:--</span>
+      </div>
+      <div class="prayer-card" id="card-isha">
+        <span class="prayer-emoji">🌃</span>
+        <span class="prayer-name-ar">عشاء</span>
+        <span class="prayer-name-en">Isha</span>
+        <span class="prayer-time-display" id="time-isha">--:--</span>
+      </div>
+    </div>
+
+    <!-- Hijri Info -->
+    <div class="info-card" style="margin:0 0 12px">
+      <div class="info-title">📅 Hijri Date</div>
+      <div class="info-text" id="hijri-date">Loading Hijri date...</div>
+    </div>
+
   </div>
 
-  <!-- IMAGE -->
-  <div class="feature" id="feature-image">
-    <div id="image-wrap">
-      <div>
-        <div class="label">STYLE</div>
-        <div class="style-chips">
-          <button class="chip active" onclick="selectStyle(this,'realistic')">Realistic</button>
-          <button class="chip" onclick="selectStyle(this,'cartoon')">Cartoon</button>
-          <button class="chip" onclick="selectStyle(this,'anime')">Anime</button>
-          <button class="chip" onclick="selectStyle(this,'oil painting')">Oil Paint</button>
-          <button class="chip" onclick="selectStyle(this,'watercolor')">Watercolor</button>
-          <button class="chip" onclick="selectStyle(this,'cyberpunk')">Cyberpunk</button>
+  <!-- DUAS PAGE -->
+  <div id="page-duas" class="page" style="display:none">
+    <div style="padding:0">
+
+      <div class="dua-category">
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-icon">🌅</span>
+          <span class="cat-title">Morning & Evening Duas</span>
+          <span class="cat-count">3 duas</span>
+          <span class="cat-arrow">▶</span>
+        </div>
+        <div class="duas-list">
+          <div class="dua-card">
+            <div class="dua-arabic">أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ، وَالْحَمْدُ لِلَّهِ</div>
+            <div class="dua-transliteration">Asbahna wa asbahal mulku lillah, walhamdu lillah</div>
+            <div class="dua-translation">We have reached the morning and at this very time all sovereignty belongs to Allah, and all praise is for Allah.</div>
+            <div class="dua-reference">📚 Muslim</div>
+            <div class="dua-actions">
+              <button class="dua-btn" onclick="copyDua(this)">📋 Copy</button>
+              <button class="dua-btn" onclick="shareDua(this)">🔗 Share</button>
+            </div>
+          </div>
+          <div class="dua-card">
+            <div class="dua-arabic">اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ</div>
+            <div class="dua-transliteration">Allahumma bika asbahna, wa bika amsayna, wa bika nahya, wa bika namootu wa ilaykan nushoor</div>
+            <div class="dua-translation">O Allah, by You we enter the morning and by You we enter the evening, by You we live and by You we die, and to You is the resurrection.</div>
+            <div class="dua-reference">📚 Abu Dawud, Tirmidhi</div>
+            <div class="dua-actions">
+              <button class="dua-btn" onclick="copyDua(this)">📋 Copy</button>
+              <button class="dua-btn" onclick="shareDua(this)">🔗 Share</button>
+            </div>
+          </div>
+          <div class="dua-card">
+            <div class="dua-arabic">أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ</div>
+            <div class="dua-transliteration">A'udhu bi kalimatillahit tammati min sharri ma khalaq</div>
+            <div class="dua-translation">I seek refuge in the perfect words of Allah from the evil of what He has created.</div>
+            <div class="dua-reference">📚 Muslim</div>
+            <div class="dua-actions">
+              <button class="dua-btn" onclick="copyDua(this)">📋 Copy</button>
+              <button class="dua-btn" onclick="shareDua(this)">🔗 Share</button>
+            </div>
+          </div>
         </div>
       </div>
-      <textarea id="image-input" rows="3" placeholder="Describe karo... jaise 'Lahore ki galiyan raat ko'"></textarea>
-      <button class="action-btn" onclick="doImage()">🎨 Generate Concept</button>
-      <div class="result-box" id="image-result" style="display:none">
-        <div class="art-preview"><div style="text-align:center"><div style="font-size:48px">🎨</div><div style="color:#a78bfa;font-size:12px;margin-top:8px">AI Art Concept</div></div></div>
-        <div class="result-label">AI CONCEPT</div>
-        <div class="result-text" id="image-output"></div>
+
+      <div class="dua-category">
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-icon">🍽️</span>
+          <span class="cat-title">Eating & Drinking</span>
+          <span class="cat-count">2 duas</span>
+          <span class="cat-arrow">▶</span>
+        </div>
+        <div class="duas-list">
+          <div class="dua-card">
+            <div class="dua-arabic">بِسْمِ اللَّهِ وَعَلَى بَرَكَةِ اللَّهِ</div>
+            <div class="dua-transliteration">Bismillahi wa 'ala barakatillah</div>
+            <div class="dua-translation">In the name of Allah and with the blessings of Allah I begin (eating).</div>
+            <div class="dua-reference">📚 Abu Dawud</div>
+            <div class="dua-actions"><button class="dua-btn" onclick="copyDua(this)">📋 Copy</button></div>
+          </div>
+          <div class="dua-card">
+            <div class="dua-arabic">الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا وَجَعَلَنَا مُسْلِمِينَ</div>
+            <div class="dua-transliteration">Alhamdulillahil ladhi at'amana wa saqana wa ja'alana muslimeen</div>
+            <div class="dua-translation">All praise is for Allah who fed us and gave us drink and made us Muslims.</div>
+            <div class="dua-reference">📚 Abu Dawud, Tirmidhi</div>
+            <div class="dua-actions"><button class="dua-btn" onclick="copyDua(this)">📋 Copy</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dua-category">
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-icon">🛡️</span>
+          <span class="cat-title">Protection & Safety</span>
+          <span class="cat-count">2 duas</span>
+          <span class="cat-arrow">▶</span>
+        </div>
+        <div class="duas-list">
+          <div class="dua-card">
+            <div class="dua-arabic">بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ</div>
+            <div class="dua-transliteration">Bismillahil ladhi la yadurru ma'asmihi shay'un fil ardi wa la fis sama'i wa huwas sami'ul 'aleem</div>
+            <div class="dua-translation">In the Name of Allah, with Whose Name nothing can cause harm on earth or in heaven, and He is the All-Hearing, the All-Knowing.</div>
+            <div class="dua-reference">📚 Abu Dawud, Tirmidhi</div>
+            <div class="dua-actions"><button class="dua-btn" onclick="copyDua(this)">📋 Copy</button></div>
+          </div>
+          <div class="dua-card">
+            <div class="dua-arabic">حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ</div>
+            <div class="dua-transliteration">Hasbunallahu wa ni'mal wakeel</div>
+            <div class="dua-translation">Allah is sufficient for us, and He is the best disposer of affairs.</div>
+            <div class="dua-reference">📚 Quran 3:173</div>
+            <div class="dua-actions"><button class="dua-btn" onclick="copyDua(this)">📋 Copy</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dua-category">
+        <div class="cat-header" onclick="toggleCat(this)">
+          <span class="cat-icon">💤</span>
+          <span class="cat-title">Before Sleeping</span>
+          <span class="cat-count">2 duas</span>
+          <span class="cat-arrow">▶</span>
+        </div>
+        <div class="duas-list">
+          <div class="dua-card">
+            <div class="dua-arabic">بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا</div>
+            <div class="dua-transliteration">Bismika Allahumma amootu wa ahya</div>
+            <div class="dua-translation">In Your name, O Allah, I die and I live.</div>
+            <div class="dua-reference">📚 Bukhari</div>
+            <div class="dua-actions"><button class="dua-btn" onclick="copyDua(this)">📋 Copy</button></div>
+          </div>
+          <div class="dua-card">
+            <div class="dua-arabic">اللَّهُمَّ قِنِي عَذَابَكَ يَوْمَ تَبْعَثُ عِبَادَكَ</div>
+            <div class="dua-transliteration">Allahumma qini 'adhabaka yawma tab'athu 'ibadak</div>
+            <div class="dua-translation">O Allah, protect me from Your punishment on the Day You resurrect Your servants.</div>
+            <div class="dua-reference">📚 Abu Dawud, Tirmidhi</div>
+            <div class="dua-actions"><button class="dua-btn" onclick="copyDua(this)">📋 Copy</button></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- QIBLA PAGE -->
+  <div id="page-qibla" class="page" style="display:none">
+    <div id="qibla-section">
+      <div class="qibla-card">
+        <div class="compass-wrap">
+          <div class="compass-bg">
+            <div class="compass-dirs">
+              <div class="compass-n">N</div>
+              <div class="compass-s">S</div>
+              <div class="compass-e">E</div>
+              <div class="compass-w">W</div>
+            </div>
+            <div id="qibla-needle"></div>
+          </div>
+        </div>
+        <div class="qibla-degree" id="qibla-degree">--°</div>
+        <div class="qibla-desc" id="qibla-desc">Press button to find Qibla direction</div>
+      </div>
+      <button id="get-qibla-btn" onclick="findQibla()">🕋 Find Qibla Direction</button>
+      <div class="info-card" style="margin-top:12px">
+        <div class="info-title">ℹ️ How to use</div>
+        <div class="info-text">1. Allow location access<br>2. Hold phone flat<br>3. Rotate until needle points to Kaaba 🕋</div>
       </div>
     </div>
   </div>
 
-  <!-- VOICE -->
-  <div class="feature" id="feature-voice">
-    <div id="voice-wrap">
-      <div class="voice-title">
-        <h3>Voice to Text AI</h3>
-        <p>Urdu ya English mein bolo — AI jawab dega</p>
+  <!-- TASBEEH PAGE -->
+  <div id="page-tasbeeh" class="page" style="display:none">
+    <div id="tasbeeh-section">
+      <div class="tasbeeh-card">
+        <div class="tasbeeh-select">
+          <button class="tasbeeh-opt active" onclick="setTasbeeh(this,'سُبْحَانَ اللَّهِ','Subhanallah','Glory be to Allah',33)">SubhanAllah</button>
+          <button class="tasbeeh-opt" onclick="setTasbeeh(this,'اَلْحَمْدُ لِلَّهِ','Alhamdulillah','All praise is for Allah',33)">Alhamdulillah</button>
+          <button class="tasbeeh-opt" onclick="setTasbeeh(this,'اللَّهُ أَكْبَرُ','Allahu Akbar','Allah is the Greatest',34)">AllahuAkbar</button>
+          <button class="tasbeeh-opt" onclick="setTasbeeh(this,'لَا إِلَٰهَ إِلَّا اللَّهُ','La ilaha illallah','There is no god but Allah',100)">La ilaha</button>
+        </div>
+        <div class="tasbeeh-arabic" id="tasbeeh-arabic">سُبْحَانَ اللَّهِ</div>
+        <div class="tasbeeh-meaning" id="tasbeeh-meaning">Glory be to Allah</div>
+        <div class="counter-display" id="counter">0</div>
+        <div class="counter-target" id="counter-target">Target: 33</div>
+        <div class="counter-progress"><div class="counter-bar" id="counter-bar"></div></div>
+        <button class="tasbih-btn" onclick="incrementCounter()">☝️</button>
+        <div class="tasbeeh-controls">
+          <button class="t-ctrl-btn" onclick="resetCounter()">🔄 Reset</button>
+          <button class="t-ctrl-btn" id="vibrate-btn" onclick="toggleVibrate()">📳 Vibrate: ON</button>
+        </div>
       </div>
-      <div class="mic-wrap">
-        <div class="ripple-ring" id="ring1" style="inset:-20px;display:none"></div>
-        <div class="ripple-ring" id="ring2" style="inset:-10px;animation-delay:0.5s;display:none"></div>
-        <button class="mic-btn" id="mic-btn" onclick="toggleVoice()">🎤</button>
-      </div>
-      <p id="mic-status" style="color:#888;font-size:13px">Mic button dabao aur bolo</p>
-      <div class="transcript-box" id="transcript-box" style="display:none">
-        <div class="result-label">TUMNE KAHA</div>
-        <div class="result-text" id="transcript-text"></div>
-      </div>
-      <div class="result-box" id="voice-result" style="display:none">
-        <div class="result-label">AI KA JAWAB</div>
-        <div class="result-text" id="voice-output"></div>
-        <button class="speak-btn" onclick="speakText()">🔊 Sunaao</button>
+      <div class="info-card">
+        <div class="info-title">💡 Hadith</div>
+        <div class="info-text">"Whoever says SubhanAllah 33 times, Alhamdulillah 33 times, and Allahu Akbar 34 times after each prayer — that is 100 total." — Sahih Muslim</div>
       </div>
     </div>
   </div>
 
 </div>
 
-<!-- Footer -->
-<div id="footer">
-  <span>NeuralMind AI v1.0 • Pakistan</span>
-  <span>Powered by Gemini AI</span>
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <button class="nav-btn active" onclick="showPage('prayers',this)"><span>🕌</span>Prayers</button>
+  <button class="nav-btn" onclick="showPage('duas',this)"><span>📖</span>Duas</button>
+  <button class="nav-btn" onclick="showPage('qibla',this)"><span>🧭</span>Qibla</button>
+  <button class="nav-btn" onclick="showPage('tasbeeh',this)"><span>📿</span>Tasbeeh</button>
 </div>
 
 <script>
-const GEMINI_KEY = "AIzaSyCTBb1VS3i4t2Gmi0el8RQOYkn1WnwMr-0";
-const DAILY_LIMIT = 10;
-let imageStyle = "realistic";
-let isRecording = false;
-let recognition = null;
-let lastVoiceReply = "";
-
-function getTodayKey(){return "nm_"+new Date().toISOString().slice(0,10)}
-function getUsage(){return parseInt(localStorage.getItem(getTodayKey())||"0")}
-function incUsage(){
-  const u = getUsage()+1;
-  localStorage.setItem(getTodayKey(),u);
-  const rem = Math.max(0,DAILY_LIMIT-u);
-  document.getElementById("msgs-left").textContent = rem+" msgs left";
-  document.getElementById("msgs-left").style.color = rem<=3?"#ef4444":"#a78bfa";
-}
-function checkLimit(){
-  if(getUsage()>=DAILY_LIMIT){document.getElementById("paywall").classList.add("show");return false;}
-  return true;
+// ─── Navigation ───────────────────────────────────────────
+function showPage(name, btn){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('page-'+name).style.display='block';
+  btn.classList.add('active');
 }
 
-// Update counter on load
-(function(){
-  const rem = Math.max(0,DAILY_LIMIT-getUsage());
-  document.getElementById("msgs-left").textContent = rem+" msgs left";
-  if(rem<=3) document.getElementById("msgs-left").style.color="#ef4444";
-})();
+// ─── Prayer Times ─────────────────────────────────────────
+let prayerTimes = {};
+let userLat = 24.8607;
+let userLng = 67.0011;
+let cityName = "Karachi";
 
-async function callGemini(messages, system){
-  const sysText = system||"You are NeuralMind AI, a helpful assistant for Pakistani users. Support Urdu and English. Be friendly and concise.";
-  const contents = [
-    {role:"user", parts:[{text:"System instruction: "+sysText}]},
-    {role:"model", parts:[{text:"Understood, I will follow these instructions."}]},
-    ...messages.map(m=>({role:m.role==="assistant"?"model":"user", parts:[{text:m.content}]}))
-  ];
-  const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+GEMINI_KEY,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({contents, generationConfig:{maxOutputTokens:800,temperature:0.7}})
-  });
-  const data = await res.json();
-  if(data.error) throw new Error(data.error.message);
-  return data.candidates?.[0]?.content?.parts?.[0]?.text||"Jawab nahi mila.";
+function getLocation(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      reverseGeocode(userLat, userLng);
+      fetchPrayerTimes();
+    }, ()=> fetchPrayerTimes());
+  } else fetchPrayerTimes();
 }
 
-// Tab switching
-function switchTab(name, btn){
-  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-  document.querySelectorAll(".feature").forEach(f=>f.classList.remove("active"));
-  btn.classList.add("active");
-  document.getElementById("feature-"+name).classList.add("active");
-}
-
-// CHAT
-let chatHistory = [];
-function addMsg(role, text){
-  const row = document.createElement("div");
-  row.className = "msg-row"+(role==="user"?" user":"");
-  if(role==="assistant") row.innerHTML = `<div class="msg-avatar">🧠</div><div class="msg-bubble ai">${text.replace(/\n/g,"<br>")}</div>`;
-  else row.innerHTML = `<div class="msg-bubble user">${text.replace(/\n/g,"<br>")}</div>`;
-  document.getElementById("chat-messages").appendChild(row);
-  row.scrollIntoView({behavior:"smooth"});
-  return row;
-}
-function addTyping(){
-  const row = document.createElement("div");
-  row.className = "msg-row";
-  row.id = "typing";
-  row.innerHTML = `<div class="msg-avatar">🧠</div><div class="msg-bubble ai"><div class="typing-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>`;
-  document.getElementById("chat-messages").appendChild(row);
-  row.scrollIntoView({behavior:"smooth"});
-}
-async function sendChat(){
-  const input = document.getElementById("chat-input");
-  const text = input.value.trim();
-  if(!text) return;
-  if(!checkLimit()) return;
-  input.value = "";
-  document.getElementById("chat-send").disabled = true;
-  addMsg("user", text);
-  chatHistory.push({role:"user", content:text});
-  addTyping();
-  incUsage();
+async function reverseGeocode(lat, lng){
   try{
-    const reply = await callGemini(chatHistory);
-    document.getElementById("typing")?.remove();
-    addMsg("assistant", reply);
-    chatHistory.push({role:"assistant", content:reply});
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+    const data = await res.json();
+    cityName = data.address?.city || data.address?.town || data.address?.county || "Your Location";
+    document.getElementById('city-name').textContent = cityName+", Pakistan";
+  }catch(e){}
+}
+
+async function fetchPrayerTimes(){
+  try{
+    const today = new Date();
+    const res = await fetch(`https://api.aladhan.com/v1/timings/${Math.floor(today.getTime()/1000)}?latitude=${userLat}&longitude=${userLng}&method=1`);
+    const data = await res.json();
+    const t = data.data.timings;
+    prayerTimes = {
+      Fajr: t.Fajr, Sunrise: t.Sunrise,
+      Dhuhr: t.Dhuhr, Asr: t.Asr,
+      Maghrib: t.Maghrib, Isha: t.Isha
+    };
+    document.getElementById('time-fajr').textContent = formatTime(t.Fajr);
+    document.getElementById('time-sunrise').textContent = formatTime(t.Sunrise);
+    document.getElementById('time-dhuhr').textContent = formatTime(t.Dhuhr);
+    document.getElementById('time-asr').textContent = formatTime(t.Asr);
+    document.getElementById('time-maghrib').textContent = formatTime(t.Maghrib);
+    document.getElementById('time-isha').textContent = formatTime(t.Isha);
+
+    // Hijri date
+    const h = data.data.date.hijri;
+    document.getElementById('hijri-date').textContent = `${h.day} ${h.month.en} ${h.year} AH`;
+
+    updateNextPrayer();
+    setInterval(updateNextPrayer, 60000);
+    setInterval(updateCountdown, 1000);
   }catch(e){
-    document.getElementById("typing")?.remove();
-    addMsg("assistant", "Error: "+e.message);
+    // Fallback Karachi times
+    prayerTimes = {Fajr:"05:12",Sunrise:"06:30",Dhuhr:"12:15",Asr:"15:45",Maghrib:"18:22",Isha:"19:45"};
+    ['fajr','sunrise','dhuhr','asr','maghrib','isha'].forEach((p,i)=>{
+      document.getElementById('time-'+p).textContent = Object.values(prayerTimes)[i];
+    });
+    updateNextPrayer();
+    setInterval(updateCountdown,1000);
   }
-  document.getElementById("chat-send").disabled = false;
-  input.focus();
 }
 
-// TRANSLATE
-function swapLangs(){
-  const f = document.getElementById("from-lang");
-  const t = document.getElementById("to-lang");
-  const tmp = f.value; f.value = t.value; t.value = tmp;
-}
-async function doTranslate(){
-  const text = document.getElementById("translate-input").value.trim();
-  if(!text) return;
-  if(!checkLimit()) return;
-  const from = document.getElementById("from-lang").value;
-  const to = document.getElementById("to-lang").value;
-  const btn = document.querySelector("#feature-translate .action-btn");
-  btn.textContent = "Translating..."; btn.disabled = true;
-  incUsage();
-  try{
-    const result = await callGemini([{role:"user", content:`Translate from ${from} to ${to}. Only give translation, nothing else:\n\n${text}`}], "You are a professional translator.");
-    document.getElementById("translate-output").textContent = result;
-    document.getElementById("translate-result").style.display = "block";
-    if(to==="Urdu"||to==="Arabic") document.getElementById("translate-output").style.direction="rtl";
-    else document.getElementById("translate-output").style.direction="ltr";
-  }catch(e){alert("Error: "+e.message);}
-  btn.textContent = "🌐 Translate"; btn.disabled = false;
+function formatTime(t){
+  const [h,m] = t.split(':');
+  const hr = parseInt(h);
+  const ampm = hr>=12?'PM':'AM';
+  const h12 = hr%12||12;
+  return `${h12}:${m} ${ampm}`;
 }
 
-// IMAGE
-function selectStyle(el, s){
-  document.querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
-  el.classList.add("active");
-  imageStyle = s;
-}
-async function doImage(){
-  const text = document.getElementById("image-input").value.trim();
-  if(!text) return;
-  if(!checkLimit()) return;
-  const btn = document.querySelector("#feature-image .action-btn");
-  btn.textContent = "⟳ Generating..."; btn.disabled = true;
-  incUsage();
-  try{
-    const result = await callGemini([{role:"user",content:`Create a vivid artistic description for this image in ${imageStyle} style: "${text}". Include colors, lighting, mood, composition. Max 100 words.`}],"You are an AI art director.");
-    document.getElementById("image-output").textContent = result;
-    document.getElementById("image-result").style.display = "block";
-  }catch(e){alert("Error: "+e.message);}
-  btn.textContent = "🎨 Generate Concept"; btn.disabled = false;
+function timeToMins(t){
+  const clean = t.replace(/\s*(AM|PM)/i,'');
+  const [h,m] = clean.split(':').map(Number);
+  const isPM = /PM/i.test(t);
+  return (isPM && h!==12 ? h+12 : (!isPM && h===12 ? 0 : h))*60+m;
 }
 
-// VOICE
-function toggleVoice(){
-  if(isRecording){stopVoice();return;}
-  if(!checkLimit()) return;
-  const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(!SR){document.getElementById("mic-status").textContent="❌ Browser mein voice support nahi";return;}
-  recognition = new SR();
-  recognition.lang = "ur-PK";
-  recognition.onresult = async(e)=>{
-    const text = e.results[0][0].transcript;
-    stopVoice();
-    document.getElementById("transcript-text").textContent = text;
-    document.getElementById("transcript-box").style.display = "block";
-    document.getElementById("mic-status").textContent = "🧠 AI soch raha hai...";
-    incUsage();
-    try{
-      const reply = await callGemini([{role:"user",content:text}]);
-      lastVoiceReply = reply;
-      document.getElementById("voice-output").textContent = reply;
-      document.getElementById("voice-result").style.display = "block";
-      document.getElementById("mic-status").textContent = "Mic dabao aur bolo";
-    }catch(e){document.getElementById("mic-status").textContent="Error: "+e.message;}
-  };
-  recognition.onerror = ()=>stopVoice();
-  recognition.onend = ()=>stopVoice();
-  recognition.start();
-  isRecording = true;
-  document.getElementById("mic-btn").classList.add("recording");
-  document.getElementById("mic-btn").textContent = "⏹";
-  document.getElementById("ring1").style.display = "block";
-  document.getElementById("ring2").style.display = "block";
-  document.getElementById("mic-status").textContent = "🔴 Recording... (stop ke liye click karo)";
-  document.getElementById("mic-status").style.color = "#ef4444";
+function updateNextPrayer(){
+  const now = new Date();
+  const nowMins = now.getHours()*60+now.getMinutes();
+  const prayers = ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+  let next = null;
+  let current = null;
+
+  document.querySelectorAll('.prayer-card').forEach(c=>c.classList.remove('current'));
+
+  for(let i=0;i<prayers.length;i++){
+    const pm = timeToMins(formatTime(prayerTimes[prayers[i]]));
+    if(nowMins < pm){
+      next = {name:prayers[i], time:formatTime(prayerTimes[prayers[i]])};
+      if(i>0) current = prayers[i-1];
+      break;
+    } else { current = prayers[i]; }
+  }
+  if(!next){ next = {name:'Fajr',time:formatTime(prayerTimes['Fajr'])}; current='Isha'; }
+
+  document.getElementById('next-prayer-name').textContent = next.name;
+  document.getElementById('next-prayer-time').textContent = next.time;
+  if(current) document.getElementById('card-'+current.toLowerCase())?.classList.add('current');
 }
-function stopVoice(){
-  recognition?.stop();
-  isRecording = false;
-  document.getElementById("mic-btn").classList.remove("recording");
-  document.getElementById("mic-btn").textContent = "🎤";
-  document.getElementById("ring1").style.display = "none";
-  document.getElementById("ring2").style.display = "none";
-  document.getElementById("mic-status").style.color = "#888";
+
+function updateCountdown(){
+  if(!prayerTimes.Fajr) return;
+  const now = new Date();
+  const nowMins = now.getHours()*60+now.getMinutes();
+  const prayers = ['Fajr','Sunrise','Dhuhr','Asr','Maghrib','Isha'];
+  let nextMins = null;
+  for(let p of prayers){
+    const pm = timeToMins(formatTime(prayerTimes[p]));
+    if(nowMins < pm){ nextMins = pm; break; }
+  }
+  if(!nextMins) nextMins = timeToMins(formatTime(prayerTimes['Fajr']))+1440;
+  const diff = nextMins - nowMins;
+  const h = Math.floor(diff/60);
+  const m = diff%60;
+  document.getElementById('countdown').textContent = `in ${h>0?h+'h ':''}${m}min`;
 }
-function speakText(){
-  if(!lastVoiceReply) return;
-  const u = new SpeechSynthesisUtterance(lastVoiceReply);
-  u.lang = "ur-PK";
-  window.speechSynthesis.speak(u);
+
+// Date display
+function updateDate(){
+  const now = new Date();
+  const options = {weekday:'long',year:'numeric',month:'long',day:'numeric'};
+  document.getElementById('date-display').textContent = now.toLocaleDateString('en-US',options);
 }
+updateDate();
+
+// ─── Duas ────────────────────────────────────────────────
+function toggleCat(header){
+  header.classList.toggle('open');
+  const list = header.nextElementSibling;
+  list.classList.toggle('show');
+}
+
+function copyDua(btn){
+  const card = btn.closest('.dua-card');
+  const arabic = card.querySelector('.dua-arabic').textContent;
+  const trans = card.querySelector('.dua-translation').textContent;
+  navigator.clipboard.writeText(arabic+'\n\n'+trans);
+  btn.textContent = '✅ Copied!';
+  setTimeout(()=>btn.textContent='📋 Copy',2000);
+}
+
+function shareDua(btn){
+  const card = btn.closest('.dua-card');
+  const arabic = card.querySelector('.dua-arabic').textContent;
+  const trans = card.querySelector('.dua-translation').textContent;
+  if(navigator.share){
+    navigator.share({title:'Dua from Noor App',text:arabic+'\n\n'+trans});
+  } else {
+    navigator.clipboard.writeText(arabic+'\n\n'+trans);
+    btn.textContent='✅ Copied!';
+    setTimeout(()=>btn.textContent='🔗 Share',2000);
+  }
+}
+
+// ─── Qibla ───────────────────────────────────────────────
+function findQibla(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const qiblaAngle = calculateQibla(lat, lng);
+      document.getElementById('qibla-degree').textContent = Math.round(qiblaAngle)+'°';
+      document.getElementById('qibla-desc').textContent = 'Qibla is '+Math.round(qiblaAngle)+'° from North';
+      document.getElementById('qibla-needle').style.transform = `translateX(-50%) translateY(-100%) rotate(${qiblaAngle}deg)`;
+      document.getElementById('get-qibla-btn').textContent = '✅ Qibla Found!';
+    }, ()=>{
+      document.getElementById('qibla-desc').textContent = 'Location access denied. Allow location and try again.';
+    });
+  }
+}
+
+function calculateQibla(lat, lng){
+  const mLat = 21.4225*Math.PI/180;
+  const mLng = 39.8262*Math.PI/180;
+  const uLat = lat*Math.PI/180;
+  const uLng = lng*Math.PI/180;
+  const dLng = mLng - uLng;
+  const y = Math.sin(dLng)*Math.cos(mLat);
+  const x = Math.cos(uLat)*Math.sin(mLat)-Math.sin(uLat)*Math.cos(mLat)*Math.cos(dLng);
+  let bearing = Math.atan2(y,x)*180/Math.PI;
+  return (bearing+360)%360;
+}
+
+// ─── Tasbeeh ─────────────────────────────────────────────
+let count = 0;
+let target = 33;
+let vibrateOn = true;
+
+function setTasbeeh(btn, arabic, translit, meaning, tgt){
+  document.querySelectorAll('.tasbeeh-opt').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tasbeeh-arabic').textContent = arabic;
+  document.getElementById('tasbeeh-meaning').textContent = meaning;
+  target = tgt;
+  document.getElementById('counter-target').textContent = 'Target: '+tgt;
+  count = 0;
+  document.getElementById('counter').textContent = '0';
+  document.getElementById('counter-bar').style.width = '0%';
+}
+
+function incrementCounter(){
+  count++;
+  document.getElementById('counter').textContent = count;
+  const pct = Math.min(count/target*100,100);
+  document.getElementById('counter-bar').style.width = pct+'%';
+  if(vibrateOn && navigator.vibrate) navigator.vibrate(30);
+  if(count === target){
+    if(navigator.vibrate) navigator.vibrate([100,50,100,50,200]);
+    document.getElementById('counter').style.color = 'var(--gold)';
+    setTimeout(()=>document.getElementById('counter').style.color='',1000);
+  }
+}
+
+function resetCounter(){
+  count = 0;
+  document.getElementById('counter').textContent = '0';
+  document.getElementById('counter-bar').style.width = '0%';
+}
+
+function toggleVibrate(){
+  vibrateOn = !vibrateOn;
+  document.getElementById('vibrate-btn').textContent = '📳 Vibrate: '+(vibrateOn?'ON':'OFF');
+}
+
+// ─── Init ────────────────────────────────────────────────
+getLocation();
+fetchPrayerTimes();
 </script>
 </body>
-</html>AIzaSyCTBb1VS3i4t2Gmi0el8RQOYkn1WnwMr-0
+</html>
